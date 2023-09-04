@@ -34,17 +34,17 @@ awful.keyboard.append_global_keybindings({
 	end, { description = "open app launcher", group = "app" }),
 
 	--- Code editor
-	awful.key({ mod, shift }, "e", function()
+	awful.key({ mod }, "e", function()
 		awful.spawn(apps.default.code_editor)
 	end, { description = "open code editor", group = "app" }),
 
 	--- File manager
-	awful.key({ mod, shift }, "f", function()
+	awful.key({ mod }, "n", function()
 		awful.spawn(apps.default.file_manager)
 	end, { description = "open file manager", group = "app" }),
 
 	--- Web browser
-	awful.key({ mod, shift }, "w", function()
+	awful.key({ mod }, "w", function()
 		awful.spawn(apps.default.web_browser)
 	end, { description = "open web browser", group = "app" }),
 
@@ -200,7 +200,7 @@ awful.keyboard.append_global_keybindings({
 	end, { description = "take a area screenshot", group = "hotkeys" }),
 
 	--- Lockscreen
-	awful.key({ mod, alt }, "l", function()
+	awful.key({ mod }, "b", function()
 		lock_screen_show()
 	end, { description = "lock screen", group = "hotkeys" }),
 
@@ -386,6 +386,38 @@ awful.keyboard.append_global_keybindings({
 	awful.key({ mod }, "-", function()
 		helpers.client.resize_gaps(-5)
 	end, { description = "subtract gaps", group = "layout" }),
+
+	--- Move current window to another screen
+	awful.key({ mod, alt }, "h",
+	function()
+		local focused_client = client.focus
+		if focused_client then
+			local target_screen = awful.screen.focused().index - 1
+			if target_screen < 1 then
+				target_screen = screen.count()
+			end
+			focused_client:move_to_screen(screen[target_screen])
+			client.focus = focused_client
+		end
+	end,
+	{ description = "Move focused client to left screen", group = "client" }
+	),
+
+	-- Mover ventana enfocada a la pantalla derecha
+	awful.key({ mod, alt }, "l",
+	function()
+		local focused_client = client.focus
+		if focused_client then
+			local target_screen = awful.screen.focused().index + 1
+			if target_screen > screen.count() then
+				target_screen = 1
+			end
+			focused_client:move_to_screen(screen[target_screen])
+			client.focus = focused_client
+		end
+	end,
+	{ description = "Move focused client to right screen", group = "client" }
+	)
 })
 
 --- Move through workspaces
@@ -437,13 +469,12 @@ awful.keyboard.append_global_keybindings({
 
 -- Screen
 -----------
---awful.keyboard.append_global_keybindings({
--- No need for these (single screen setup)
---awful.key({ superkey, ctrlkey }, "j", function () awful.screen.focus_relative( 1) end,
---{description = "focus the next screen", group = "screen"}),
---awful.key({ superkey, ctrlkey }, "k", function () awful.screen.focus_relative(-1) end,
---{description = "focus the previous screen", group = "screen"}),
---})
+awful.keyboard.append_global_keybindings({
+	awful.key({ mod, ctrl }, "l", function () awful.screen.focus_relative( 1) end,
+	{description = "focus the next screen", group = "screen"}),
+	awful.key({ mod, ctrl }, "h", function () awful.screen.focus_relative(-1) end,
+	{description = "focus the previous screen", group = "screen"}),
+})
 
 --- Mouse bindings on desktop
 --- ~~~~~~~~~~~~~~~~~~~~~~~~~
